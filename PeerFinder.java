@@ -42,8 +42,7 @@ public class PeerFinder {
         }
     }
 
-    public static class IntSumReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
-        private IntWritable result = new IntWritable();
+    public static class IntSumReducer extends Reducer<Text, IntWritable, Text, Text> {
 
 
         /**
@@ -57,12 +56,11 @@ public class PeerFinder {
         public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
             StringBuilder res = new StringBuilder();
             for (IntWritable val : values) {
-                res.append(val.get().toString()+",");
+                res.append(String.valueOf(val.get())+",");
             }
             String R = res.toString();
             R=R.substring(0,R.length()-1);
-            result.set(R);
-            context.write(key, result);
+            context.write(key, new Text(R));
         }
     }
 
