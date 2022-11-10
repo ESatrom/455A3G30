@@ -35,7 +35,7 @@ public class PeerFinder {
             for(int first = 0; first<in2.length; first++){
                 for(int second = 0; second<in2.length; second++){
                     if(first==second) { continue; }
-                    word.set(Math.min(in2[first], in2[second])+" "+Math.max(in2[first], in2[second]));
+                    word.set(Math.min(in2[first], in2[second])+" "+Math.max(in2[first], in2[second])+":");
                     context.write(word, common);
                 }
             }
@@ -55,11 +55,13 @@ public class PeerFinder {
          * @throws InterruptedException
          */
         public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
-            int sum = 0;
+            StringBuilder res = new StringBuilder();
             for (IntWritable val : values) {
-                sum += val.get();
+                res.append(val.get().toString()+",");
             }
-            result.set(sum);
+            String R = res.toString();
+            R=R.substring(0,R.length()-1);
+            result.set(R);
             context.write(key, result);
         }
     }
