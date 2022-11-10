@@ -13,7 +13,6 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 public class PeerFinder {
 
     public static class TokenizerMapper extends Mapper<Object, Text, Text, IntWritable> {
-        private final static IntWritable one = new IntWritable(1);
         private Text word = new Text();
 
         /**
@@ -29,22 +28,22 @@ public class PeerFinder {
          */
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             String[] in = value.toString().split(" ");
-            String R = "[";
+            int[] in2 = new int[in.length];
             for(int i = 0; i < in.length; i++){
-                R+=in[i]+",";
+                try{
+                    in2[i]=Integer.parseInt(in[i]);
+                } catch(Exception e){
+                    in2[i]=-1;
+                    System.err.println(i+": "+in[i]+";");
+                }
             }
-            R=R.substring(0,R.length()-1)+"]";
-            throw new IOException(R);
-            // int[] in2 = new int[in.length-1];
-            // for(int i = 1; i < in.length; i++){ in2[i-1]=Integer.parseInt(in[i]); }
-            // IntWritable common = new IntWritable(Integer.parseInt(in[0]));
-            // for(int first = 0; first<in2.length; first++){
-            //     for(int second = 0; second<in2.length; second++){
-            //         if(first==second) { continue; }
-            //         word.set(Math.min(in2[first], in2[second])+" "+Math.max(in2[first], in2[second])+":");
-            //         context.write(word, common);
-            //     }
-            // }
+            IntWritable common = new IntWritable(in2[0]);
+            for(int first = 1; first<in2.length; first++){
+                for(int second = 1; second<in2.length; second++){
+                    if(first==second) { continue; }
+                    context.write(new Text(Math.min(in2[first], in2[second])+" "+Math.max(in2[first], in2[second])+":"), common);
+                }
+            }
         }
     }
 
