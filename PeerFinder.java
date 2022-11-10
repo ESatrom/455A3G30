@@ -29,16 +29,22 @@ public class PeerFinder {
          */
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             String[] in = value.toString().split(" ");
-            int[] in2 = new int[in.length-1];
-            for(int i = 1; i < in.length; i++){ in2[i-1]=Integer.parseInt(in[i]); }
-            IntWritable common = new IntWritable(Integer.parseInt(in[0]));
-            for(int first = 0; first<in2.length; first++){
-                for(int second = 0; second<in2.length; second++){
-                    if(first==second) { continue; }
-                    word.set(Math.min(in2[first], in2[second])+" "+Math.max(in2[first], in2[second])+":");
-                    context.write(word, common);
-                }
+            String R = "[";
+            for(int i = 0; i < in.length; i++){
+                R+=in[i]+",";
             }
+            R=R.substring(0,R.length()-1)+"]";
+            throw new IOException(R);
+            // int[] in2 = new int[in.length-1];
+            // for(int i = 1; i < in.length; i++){ in2[i-1]=Integer.parseInt(in[i]); }
+            // IntWritable common = new IntWritable(Integer.parseInt(in[0]));
+            // for(int first = 0; first<in2.length; first++){
+            //     for(int second = 0; second<in2.length; second++){
+            //         if(first==second) { continue; }
+            //         word.set(Math.min(in2[first], in2[second])+" "+Math.max(in2[first], in2[second])+":");
+            //         context.write(word, common);
+            //     }
+            // }
         }
     }
 
