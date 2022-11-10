@@ -10,7 +10,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-public class WordCount {
+public class PeerFinder {
 
     public static class TokenizerMapper extends Mapper<Object, Text, Text, IntWritable> {
         private final static IntWritable one = new IntWritable(1);
@@ -29,6 +29,8 @@ public class WordCount {
          */
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             StringTokenizer itr = new StringTokenizer(value.toString());
+            word.set("TEST: \n"+value.toString()+"\n: END");
+            context.write(word, one);
             while (itr.hasMoreTokens()) {
                 word.set(itr.nextToken());
                 context.write(word, one);
@@ -62,8 +64,8 @@ public class WordCount {
     
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
-        Job job = Job.getInstance(conf, "word count");
-        job.setJarByClass(WordCount.class);
+        Job job = Job.getInstance(conf, "peer finder");
+        job.setJarByClass(PeerFinder.class);
         job.setMapperClass(TokenizerMapper.class);
         // job.setCombinerClass(IntSumReducer.class);
         job.setReducerClass(IntSumReducer.class);
