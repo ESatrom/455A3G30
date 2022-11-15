@@ -1,0 +1,5 @@
+PeerFinder is a MapReduce program implemented with Hadoop which, given an input of peers and their neighbors, will find all shared neighbors for any given pair of peers. Pairs of peers without shared neighbors will be omitted.
+
+The process is very simple, the map function takes a line of input, and for each pair of peers (b,c) in a peer (a)'s neighbor list, creates an element identifying the initial peer (a) as a shared peer for the pair of peers (b,c). The reduce function then takes each of these elements keyed to a pair of peers and combines the list into a single list of common peers (a's) with the key of the pair of peers (b,c).
+
+After these 2 steps, your input has been completely processed, and is then outputted in the format of "B C: a a a a a" for each pair B,C where B,C is a unique pair with at least one shared neighbor a.
